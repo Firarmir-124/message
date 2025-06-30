@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "include": ["src"],
+  "references": [
+    { "path": "../../libs/config" },
+    { "path": "../../libs/event-bus" },
+    { "path": "../../libs/db" }
+  ]
+}
