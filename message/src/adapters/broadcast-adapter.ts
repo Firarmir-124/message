@@ -6,7 +6,7 @@ export class BroadcastAdapter implements NotificationAdapter {
 
   constructor(private socket: SocketService) {}
 
-  async send(_: string, message: string): Promise<void> {
+  async send(address: string, message: string): Promise<void> {
     this.socket.sendBroadcastMessage({ data: message });
   }
 }
