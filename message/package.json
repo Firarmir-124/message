@@ -7,7 +7,8 @@
     "dev": "nodemon --exec ts-node -r tsconfig-paths/register src/main.ts"
   },
   "dependencies": {
-    "node-telegram-bot-api": "^0.61.0"
+    "node-telegram-bot-api": "^0.61.0",
+    "axios": "^1.6.7"
   },
   "devDependencies": {
     "@types/node": "^24.0.1",

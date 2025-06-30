@@ -1,4 +1,4 @@
-import { NotificationAdapter, TemplateConfig } from './notification-adapter';
+import { NotificationAdapter } from './notification-adapter';
 import { SocketService } from '../common/socket.service';
 
 export class PrivateMessageAdapter implements NotificationAdapter {
@@ -6,7 +6,7 @@ export class PrivateMessageAdapter implements NotificationAdapter {
 
   constructor(private socket: SocketService) {}
 
-  async send(userId: string, template: TemplateConfig): Promise<void> {
-    this.socket.sendPrivateMessage({ user: userId, data: template.body });
+  async send(userId: string, message: string): Promise<void> {
+    this.socket.sendPrivateMessage({ user: userId, data: message });
   }
 }
