@@ -41,18 +41,6 @@ export class SocketService {
     });
   }
 
-  public sendBroadcastMessage(message: any) {
-    if (this.connectionList.length !== 0) {
-      this.connectionList.forEach((item) => {
-        if (this.connectionList.includes(item)) {
-          this.io.to(item).emit('broadcast', message.data);
-        } else {
-          console.log('socket not fount');
-        }
-      });
-      console.log('send message all');
-    }
-  }
 
   public sendPrivateMessage(message: any) {
     if (!this.connectionList.includes(message.user)) {

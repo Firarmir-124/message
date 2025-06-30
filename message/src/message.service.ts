@@ -4,7 +4,6 @@ import {NOTIFIER_DISPATCH_EVENT} from '@config/common/bus.topics';
 import type {NotificationAdapter} from './adapters/notification-adapter';
 import {EmailAdapter} from './adapters/email.adapter';
 import {TelegramAdapter} from './adapters/telegram.adapter';
-import {BroadcastAdapter} from './adapters/broadcast-adapter';
 import {PrivateMessageAdapter} from './adapters/private-message.adapter';
 import {WhatsAppAdapter} from './adapters/whatsapp.adapter';
 import {SmsAdapter} from './adapters/sms.adapter';
@@ -51,7 +50,7 @@ export class MessageService {
   }
 
   private registerEnvAdapters() {
-    const list = this.config.getString('MESSAGE_ADAPTERS', 'email,telegram,broadcast,private,whatsapp,sms')
+    const list = this.config.getString('MESSAGE_ADAPTERS', 'email,telegram,private,whatsapp,sms')
       .split(',')
       .map(a => a.trim())
       .filter(Boolean);
@@ -62,9 +61,6 @@ export class MessageService {
           break;
         case 'telegram':
           this.registerAdapter(new TelegramAdapter(this.telegramService));
-          break;
-        case 'broadcast':
-          this.registerAdapter(new BroadcastAdapter(this.socketService));
           break;
         case 'private':
           this.registerAdapter(new PrivateMessageAdapter(this.socketService));

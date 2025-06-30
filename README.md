@@ -6,7 +6,6 @@ This service dispatches notifications using multiple adapters.
 
 - email
 - telegram
-- broadcast
 - private
 - whatsapp
 - sms (Twilio)
