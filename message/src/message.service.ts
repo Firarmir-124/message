@@ -6,6 +6,8 @@ import { NOTIFIER_DISPATCH_EVENT, TELEGRAM_SEND_MESSAGE } from '@config/common/b
 import type { TemplateConfig, NotificationAdapter } from './adapters/notification-adapter';
 import { EmailAdapter } from './adapters/email.adapter';
 import { TelegramAdapter } from './adapters/telegram.adapter';
+import { BroadcastAdapter } from './adapters/broadcast-adapter';
+import { PrivateMessageAdapter } from './adapters/private-message.adapter';
 import { TelegramService, TelegramMessagePayload } from './common/telegram.service';
 
 interface NotifyEvent {
@@ -49,7 +51,7 @@ export class MessageService {
   }
 
   private registerEnvAdapters() {
-    const list = this.config.getString('MESSAGE_ADAPTERS', 'email,telegram')
+    const list = this.config.getString('MESSAGE_ADAPTERS', 'email,telegram,broadcast,private')
       .split(',')
       .map(a => a.trim())
       .filter(Boolean);
@@ -60,6 +62,12 @@ export class MessageService {
           break;
         case 'telegram':
           this.registerAdapter(new TelegramAdapter(this.telegramService));
+          break;
+        case 'broadcast':
+          this.registerAdapter(new BroadcastAdapter());
+          break;
+        case 'private':
+          this.registerAdapter(new PrivateMessageAdapter());
           break;
         default:
           console.warn(`[MessageService] Unknown adapter ${name}`);
