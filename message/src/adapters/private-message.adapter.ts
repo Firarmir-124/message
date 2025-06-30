@@ -1,15 +1,15 @@
 import { NotificationAdapter, TemplateConfig } from './notification-adapter';
 import { SocketService } from '../common/socket.service';
 
-export class BroadcastAdapter implements NotificationAdapter {
-  readonly name = 'broadcast';
+export class PrivateMessageAdapter implements NotificationAdapter {
+  readonly name = 'private';
   private socket: SocketService;
 
   constructor() {
     this.socket = SocketService.getInstance();
   }
 
-  async send(_: string, template: TemplateConfig): Promise<void> {
-    this.socket.sendBroadcastMessage({ data: template.body });
+  async send(userId: string, template: TemplateConfig): Promise<void> {
+    this.socket.sendPrivateMessage({ user: userId, data: template.body });
   }
 }
