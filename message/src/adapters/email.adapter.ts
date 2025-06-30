@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 import { ConfigService } from '@config';
-import { NotificationAdapter, TemplateConfig } from './notification-adapter';
+import { NotificationAdapter } from './notification-adapter';
 
 export class EmailAdapter implements NotificationAdapter {
   readonly name = 'email';
@@ -18,12 +18,12 @@ export class EmailAdapter implements NotificationAdapter {
     });
   }
 
-  async send(email: string, template: TemplateConfig): Promise<void> {
+  async send(address: string, message: string): Promise<void> {
     await this.transporter.sendMail({
       from: this.config.getString('SMTP_FROM', ''),
-      to: email,
-      subject: template.subject || '',
-      html: template.body,
+      to: address,
+      subject: '',
+      html: message,
     });
   }
 }
