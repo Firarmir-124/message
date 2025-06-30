@@ -6,7 +6,7 @@ export class SocketService {
   private io: SocketIOServer;
   private connectionList: string[];
 
-  private constructor() {
+  constructor() {
     this.connectionList = [];
   }
 

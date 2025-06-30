@@ -1,14 +1,15 @@
-import { ConfigService } from '@config';
+import {ConfigService} from '@config';
 import path from 'node:path';
 import fs from 'node:fs';
-import { KafkaEventBus, MultiEventBus } from '@event-bus';
-import { NOTIFIER_DISPATCH_EVENT, TELEGRAM_SEND_MESSAGE } from '@config/common/bus.topics';
-import type { TemplateConfig, NotificationAdapter } from './adapters/notification-adapter';
-import { EmailAdapter } from './adapters/email.adapter';
-import { TelegramAdapter } from './adapters/telegram.adapter';
-import { BroadcastAdapter } from './adapters/broadcast-adapter';
-import { PrivateMessageAdapter } from './adapters/private-message.adapter';
-import { TelegramService, TelegramMessagePayload } from './common/telegram.service';
+import {KafkaEventBus, MultiEventBus} from '@event-bus';
+import {NOTIFIER_DISPATCH_EVENT} from '@config/common/bus.topics';
+import type {NotificationAdapter, TemplateConfig} from './adapters/notification-adapter';
+import {EmailAdapter} from './adapters/email.adapter';
+import {TelegramAdapter} from './adapters/telegram.adapter';
+import {BroadcastAdapter} from './adapters/broadcast-adapter';
+import {PrivateMessageAdapter} from './adapters/private-message.adapter';
+import {TelegramService} from './common/telegram.service';
+import {SocketService} from "./common/socket.service";
 
 interface NotifyEvent {
   userId: string;
@@ -28,10 +29,12 @@ export class MessageService {
   private rules: NotificationRule[] = [];
   private adapters: Record<string, NotificationAdapter> = {};
   private telegramService: TelegramService;
+  private socketService: SocketService;
 
   constructor(config: ConfigService) {
     this.config = config;
     this.telegramService = new TelegramService(config);
+    this.socketService = new SocketService()
   }
 
   async start() {
@@ -64,10 +67,10 @@ export class MessageService {
           this.registerAdapter(new TelegramAdapter(this.telegramService));
           break;
         case 'broadcast':
-          this.registerAdapter(new BroadcastAdapter());
+          this.registerAdapter(new BroadcastAdapter(this.socketService));
           break;
         case 'private':
-          this.registerAdapter(new PrivateMessageAdapter());
+          this.registerAdapter(new PrivateMessageAdapter(this.socketService));
           break;
         default:
           console.warn(`[MessageService] Unknown adapter ${name}`);
@@ -79,7 +82,7 @@ export class MessageService {
     this.adapters[adapter.name] = adapter;
   }
 
-  private async loadRules() {
+  private loadRules() {
     try {
       const rulesPath = path.resolve(__dirname, '../config/notifications.json');
       const json = fs.readFileSync(rulesPath, 'utf8');
@@ -91,16 +94,7 @@ export class MessageService {
   }
 
   private async subscribeToEvents() {
-    await this.multiBus.subscribe(NOTIFIER_DISPATCH_EVENT, this.handleEvent.bind(this));
-    await this.multiBus.subscribe(TELEGRAM_SEND_MESSAGE, this.handleSendMessage.bind(this));
-  }
-
-  private async handleSendMessage(message: TelegramMessagePayload) {
-    try {
-      await this.telegramService.sendMessage(message);
-    } catch (err) {
-      console.error('[MessageService] Failed to send telegram message', err);
-    }
+    await this.multiBus.subscribe(NOTIFIER_DISPATCH_EVENT, this.handleEvent);
   }
 
   private findRule(event: string): NotificationRule | undefined {

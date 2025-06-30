@@ -3,9 +3,10 @@ import { SocketService } from '../common/socket.service';
 
 export class PrivateMessageAdapter implements NotificationAdapter {
   readonly name = 'private';
-  private socket: SocketService;
 
-  constructor() {
+  constructor(
+      private socket: SocketService
+  ) {
     this.socket = SocketService.getInstance();
   }
 

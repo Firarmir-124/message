@@ -3,11 +3,8 @@ import { SocketService } from '../common/socket.service';
 
 export class BroadcastAdapter implements NotificationAdapter {
   readonly name = 'broadcast';
-  private socket: SocketService;
 
-  constructor() {
-    this.socket = SocketService.getInstance();
-  }
+  constructor(private socket: SocketService) {}
 
   async send(_: string, template: TemplateConfig): Promise<void> {
     this.socket.sendBroadcastMessage({ data: template.body });
