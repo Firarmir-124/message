@@ -56,10 +56,10 @@ export class MessageService {
     for (const name of list) {
       switch (name) {
         case 'email':
-          this.registerAdapter(new EmailAdapter(this.config));
+          this.registerAdapter(new EmailAdapter(this.multiBus));
           break;
         case 'telegram':
-          this.registerAdapter(new TelegramAdapter(this.config));
+          this.registerAdapter(new TelegramAdapter(this.telegramService));
           break;
         default:
           console.warn(`[MessageService] Unknown adapter ${name}`);

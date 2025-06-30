@@ -18,10 +18,10 @@ export class EmailAdapter implements NotificationAdapter {
     });
   }
 
-  async send(userId: string, template: TemplateConfig): Promise<void> {
+  async send(email: string, template: TemplateConfig): Promise<void> {
     await this.transporter.sendMail({
       from: this.config.getString('SMTP_FROM', ''),
-      to: userId,
+      to: email,
       subject: template.subject || '',
       html: template.body,
     });

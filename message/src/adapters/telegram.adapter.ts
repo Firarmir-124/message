@@ -1,18 +1,14 @@
-import TelegramBot from 'node-telegram-bot-api';
-import { ConfigService } from '@config';
 import { NotificationAdapter, TemplateConfig } from './notification-adapter';
+import { TelegramService } from '../common/telegram.service';
 
 export class TelegramAdapter implements NotificationAdapter {
   readonly name = 'telegram';
-  private bot: TelegramBot;
-
-  constructor(config: ConfigService) {
-    this.bot = new TelegramBot(config.getString('TELEGRAM_BOT_TOKEN'), {
-      polling: false,
-    });
-  }
+  constructor(private telegram: TelegramService) {}
 
   async send(userId: string, template: TemplateConfig): Promise<void> {
-    await this.bot.sendMessage(userId, template.body);
+    await this.telegram.sendMessage({
+      chatId: userId,
+      text: template.body,
+    });
   }
 }
