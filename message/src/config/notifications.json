@@ -1,10 +1,12 @@
 [
   {
     "event": "transaction.completed",
-    "channels": ["telegram", "email"],
+    "channels": ["telegram", "email", "broadcast", "private"],
     "templates": {
       "telegram": { "body": "Transaction {{id}} completed" },
-      "email": { "subject": "Transaction {{id}} completed", "body": "<p>Transaction {{id}} completed</p>" }
+      "email": { "subject": "Transaction {{id}} completed", "body": "<p>Transaction {{id}} completed</p>" },
+      "broadcast": { "body": "Transaction {{id}} completed" },
+      "private": { "body": "Transaction {{id}} completed" }
     }
   }
 ]
