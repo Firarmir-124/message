@@ -7,8 +7,10 @@ import {TelegramAdapter} from './adapters/telegram.adapter';
 import {BroadcastAdapter} from './adapters/broadcast-adapter';
 import {PrivateMessageAdapter} from './adapters/private-message.adapter';
 import {WhatsAppAdapter} from './adapters/whatsapp.adapter';
+import {SmsAdapter} from './adapters/sms.adapter';
 import {TelegramService} from './common/telegram.service';
 import {WhatsAppService} from './common/whatsapp.service';
+import {SmsService} from './common/sms.service';
 import {SocketService} from './common/socket.service';
 
 interface NotifyEvent {
@@ -23,12 +25,14 @@ export class MessageService {
   private telegramService: TelegramService;
   private whatsappService: WhatsAppService;
   private socketService: SocketService;
+  private smsService: SmsService;
 
   constructor(config: ConfigService) {
     this.config = config;
     this.telegramService = new TelegramService(config);
     this.whatsappService = new WhatsAppService(config);
     this.socketService = new SocketService();
+    this.smsService = new SmsService(config);
   }
 
   async start() {
@@ -47,7 +51,7 @@ export class MessageService {
   }
 
   private registerEnvAdapters() {
-    const list = this.config.getString('MESSAGE_ADAPTERS', 'email,telegram,broadcast,private,whatsapp')
+    const list = this.config.getString('MESSAGE_ADAPTERS', 'email,telegram,broadcast,private,whatsapp,sms')
       .split(',')
       .map(a => a.trim())
       .filter(Boolean);
@@ -67,6 +71,9 @@ export class MessageService {
           break;
         case 'whatsapp':
           this.registerAdapter(new WhatsAppAdapter(this.whatsappService));
+          break;
+        case 'sms':
+          this.registerAdapter(new SmsAdapter(this.smsService));
           break;
         default:
           console.warn(`[MessageService] Unknown adapter ${name}`);
